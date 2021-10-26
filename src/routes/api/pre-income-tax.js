@@ -7,16 +7,16 @@ const router = express.Router();
   router.get('/', (req, res) => {
   
     //accessing get parameters
-    var salary = parseFloat(req.query.postTaxSalary);
+    var postSalary = parseFloat(req.query.postTaxSalary);
     var result = {
-        baseSalary: salary,
+        baseSalary: 0.0,
         superannuation: 0.0,
         taxes: {
             income: 0.0,
             medicare: 0.0,
             total: 0.0
         },
-        postTaxIncome: 0.0
+        postTaxIncome: postSalary
 
     };
 

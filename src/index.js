@@ -28,9 +28,6 @@ app.use(cors());
 app.use(morgan('combined'));
 
 //endpoint
-//member
-// app.use('/api/members', require('./routes/api/members'));
-
 //reverseword
 app.use('/api/reverse-words', reverseWords);
 
