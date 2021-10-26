@@ -2,8 +2,13 @@
 const express = require('express');
 const router = express.Router();
 
-  
-//with parameters
+ /**
+ * @api {get} /api/reverse-words Reverse Words
+ * @apiName reverse-words 
+ * @apiGroup api
+ * @apiParam {String} sentence.
+ * @apiSuccess (Success 200) {String} reversed sentence
+ */
 router.get('/', (req, res) => {
 
     //accessing get parameters

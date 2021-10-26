@@ -1,10 +1,14 @@
 
 const express = require('express');
 const router = express.Router();
-
-
   
-  //with parameters
+ /**
+ * @api {get} /api/sort-words Sort Words
+ * @apiName sort-words 
+ * @apiGroup api
+ * @apiParam {String} sentence.
+ * @apiSuccess (Success 200) {String} sorted sentence
+ */
   router.get('/', (req, res) => {
   
     //accessing get parameters
@@ -13,8 +17,7 @@ const router = express.Router();
         return text.split('').sort((a,b) => a.localeCompare(b)).join('')
       }).join('');
   
-      console.log(sorted);
-      res.send(sorted);
+      res.json(sorted);
   });
 
 

@@ -3,7 +3,13 @@ const express = require('express');
 const router = express.Router();
 
   
-  //with parameters
+ /**
+ * @api {get} /api/calculate-after-tax-income Compute Post Tax Income
+ * @apiName calculate-after-tax-income 
+ * @apiGroup api
+ * @apiParam {float} annualBaseSalary.
+ * @apiSuccess (Success 200) {Object} result computation
+ */
   router.get('/', (req, res) => {
   
     //accessing get parameters
@@ -38,36 +44,32 @@ const router = express.Router();
   function computeSuperAnnuation(salary)
   {
     let percent = 0.095;
-    return roundToHundredth(salary * percent); //rounded to nearest cent
+    return Math.round(salary * percent);
   }
 
   function computeIncomeTax(salary)
   {
-    let percent = 0;
+    let incomeTax = 0.0
+    let last = salary;
+    let taxBracket = [
+      {bracket: 180000, tax: 0.45},
+      {bracket: 87000, tax: 0.37},
+      {bracket: 37000, tax: 0.325},
+      {bracket: 18200, tax: 0.19}, 
+      {bracket: 0, tax: 0}
+    ];
 
-    if (salary > 0 && salary < 18201) {
-        //0
-        percent = 0;
-    } 
-    else if (salary > 18200 && salary < 37001) {
-        //19%
-        percent = 0.19;
-    } else if(salary > 37000 && salary < 87001)
-    {
-        //32.5%       
-        percent = 0.325;
-    } else if(salary > 87000 && salary < 180001)
-    {
-        //37%        
-        percent = 0.37;
-    }      
-    else {
-      //over $180,000
-      //45 %      
-      percent = 0.45;
-    }
-
-    return roundToHundredth(salary * percent); //rounded to nearest cent
+    taxBracket.forEach(t => {
+      if (salary > t.bracket) {
+        let bracketComp = (last - (t.bracket + 1)) * t.tax;
+        let comp = Math.round(bracketComp);
+        console.log(comp);
+        incomeTax = incomeTax + comp;
+        last = t.bracket;
+      }      
+    });
+    
+    return incomeTax;
 
   }
 
@@ -89,13 +91,8 @@ const router = express.Router();
 
     var result = salary * percent; 
 
-    return roundToHundredth(result);
+    return Math.round(result);
 
-  }
-
-  function roundToHundredth(value)
-  {
-    return Number(value.toFixed(2));
   }
 
   module.exports = router;
