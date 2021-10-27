@@ -40,7 +40,7 @@ app.use('/api/sort-words', sortWords);
 app.use('/api/calculate-after-tax-income', incomeTax);
 
 //pre income tax
-//app.use('/api/calculate-pre-tax-income-from-take-home', preIncomeTax);
+app.use('/api/calculate-pre-tax-income-from-take-home', preIncomeTax);
 
 
 app.get('/', (req, res)=>{
