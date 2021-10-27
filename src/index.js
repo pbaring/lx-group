@@ -27,6 +27,8 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
+
+
 //endpoint
 //reverseword
 app.use('/api/reverse-words', reverseWords);
@@ -38,7 +40,12 @@ app.use('/api/sort-words', sortWords);
 app.use('/api/calculate-after-tax-income', incomeTax);
 
 //pre income tax
-app.use('/api/calculate-pre-tax-income-from-take-home', preIncomeTax);
+//app.use('/api/calculate-pre-tax-income-from-take-home', preIncomeTax);
+
+
+app.get('/', (req, res)=>{
+  res.send("Welcome to LX Group Technical Challenge");
+});
 
 // starting the server
 app.listen(PORT, () => {
