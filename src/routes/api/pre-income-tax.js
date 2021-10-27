@@ -1,6 +1,8 @@
 
 const express = require('express');
 const router = express.Router();
+const calc = require('../../services/income-calculator')
+
 
    /**
  * @api {get} /api/calculate-pre-tax-income-from-take-home Compute Base Salary
@@ -28,17 +30,21 @@ const router = express.Router();
 
       };
 
-    //computations
-    let annuation = computeSuperAnnuation(salary);
-    let incomeTax = computeIncomeTax(salary);
-    let medicareTax = computeMedicare(salary);
-    let totalTax = incomeTax + Math.round(medicareTax);
+    // //computations    
+    //{postTaxIncome: postTaxIncome, incomeTax: incomeTax, medicareTax: medicareTax, totalTax: totalTax, salary: salary}
+    let netPay = Math.round(postSalary);
+    let comp = calc.computeTaxBreakdown(netPay)
+    let salary = comp.salary;
+    let annuation = calc.computeSuperAnnuation(salary);
+    let incomeTax = comp.incomeTax;
+    let medicareTax = comp.medicareTax;
+    let totalTax = comp.totalTax;
 
     result.superannuation = annuation;
     result.taxes.income = incomeTax;
     result.taxes.medicare = medicareTax;
     result.taxes.total = totalTax
-    result.postTaxIncome = salary - totalTax;
+    result.baseSalary = salary;
   
     res.json(result);
     }
@@ -49,59 +55,5 @@ const router = express.Router();
     }
 
  });
-
- function computeSuperAnnuation(salary)
- {
-   let percent = 0.095;
-   return Math.round(salary * percent);
- }
-
- function computeIncomeTax(salary)
-  {
-    let incomeTax = 0.0
-    let ceiling = salary;
-    let taxBracket = [
-      {bracket: 180000, tax: 0.45},
-      {bracket: 87000, tax: 0.37},
-      {bracket: 37000, tax: 0.325},
-      {bracket: 18200, tax: 0.19}, 
-      {bracket: 0, tax: 0}
-    ];
-
-    taxBracket.forEach(t => {
-      if (salary > t.bracket) {
-        let bracketComp = (ceiling - (t.bracket + 1)) * t.tax;
-        console.log(bracketComp);
-        incomeTax = incomeTax + Math.round(bracketComp);
-        ceiling = t.bracket;
-      }      
-    });
-    
-    return Math.round(incomeTax);
-
-  }
-
-  function computeMedicare(salary)
-  {
-    let ceiling = salary;
-    let medicare = 0.0;
-
-    let taxBracket = [
-      {bracket: 26668, tax: 0.02},
-      {bracket: 21336, tax: 0.1}
-    ];
-
-    taxBracket.forEach(t => {
-      if (salary > t.bracket) {
-        let bracketComp = (ceiling - t.bracket) * t.tax;
-        console.log(bracketComp);
-        medicare = medicare + bracketComp;
-        ceiling = t.bracket;
-      }      
-    });
-    
-    return medicare < 0.159 ? medicare : Math.round(medicare);
-
-  }
-
+ 
   module.exports = router;
