@@ -66,6 +66,7 @@ const computeTaxBreakdown = function(netPay)
     let salary = 0.0;
     let prevIncomeTaxComp = 0.0;
     let prevMedTaxComp= 0.0;
+    let initNetPayComp = {postTaxIncome: netPay, incomeTax: 0, medicareTax: 0, totalTax: 0, salary: netPay};
 
     for (let i = 1; i < mTaxBracket.length; i++) {
       let medTax = mTaxBracket[i];   
@@ -106,7 +107,7 @@ const computeTaxBreakdown = function(netPay)
 
     }
       
-    return Math.round(salary);
+    return initNetPayComp;
 
   }
 
